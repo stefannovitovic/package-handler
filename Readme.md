@@ -61,6 +61,10 @@ go test ./logic
 
 Send a POST request to `/calculate-packs`:
 
+Following fields shouold be part of request body:
+- order - represents the number of items in the order.
+- pack_sizes - represents the available pack sizes.
+
 ```sh
 curl -X POST http://localhost:8080/calculate-packs \
   -H "Content-Type: application/json" \
