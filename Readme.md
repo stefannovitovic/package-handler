@@ -51,14 +51,6 @@ make test
 ```
 ---
 
-## 🧪 How to test
-
-Run unit tests (table-driven, of course!):
-
-```sh
-go test ./logic
-```
-
 ---
 
 ## Example API usage
