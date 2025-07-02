@@ -32,12 +32,17 @@ This reduced the image size from 25mg - 7mb
 
 Build the image:
 ```sh
-docker build -t package-handler .
+make build
 ```
 
 Run the container:
 ```sh
-docker run -p 8080:8080 package-handler
+make run
+```
+
+Stop the container:
+```sh
+make stop
 ```
 
 ---
