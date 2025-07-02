@@ -12,7 +12,7 @@ Given an order amount number and a set of available pack sizes, this service cal
 - The **fewest number of packs** to achieve the desired number items.
 - The breakdown of packages to use in the warehouse.
 
-It uses a dynamic programming solution to determine the best combination of packs minimizing both the total number of items shipped and the number of packs used. This approach guarantees the most cost-effective and space-efficient packing, even for large and complex orders.
+It uses a dynamic programming solution to determine the best combination of packs minimizing both the total number of items shipped and the number of packs used. This approach guarantees the most cost-effective and space-efficient packing, even for large and complex orders. The decision to use dynamic programming for solving this problem was inspired by the famous book *"Grokking   Algorithms"* and its solution to the knapsack problem.
 
 ---
 
@@ -96,6 +96,5 @@ package-handler/
 
 ## Notes
 
-- **Dynamic programming** The decision to use dynamic programming for solving this problem was inspired by the famous book *"Grokking   Algorithms"* and its solution to the knapsack problem.
 - **Table-driven tests** for robust, idiomatic Go testing.
 - **Multi-stage Docker build** for a low size, production-ready image.
