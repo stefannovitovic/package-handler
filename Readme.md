@@ -91,6 +91,6 @@ package-handler/
 
 ## Notes
 
-- **Dynamic programming** ensures minimal overage and minimal packs.
+- **Dynamic programming** The decision to use dynamic programming for solving this problem was inspired by the famous book *"Grokking   Algorithms"* and its solution to the knapsack problem.
 - **Table-driven tests** for robust, idiomatic Go testing.
 - **Multi-stage Docker build** for a low size, production-ready image.
