@@ -8,3 +8,6 @@ run: build
 
 stop:
 	docker stop $(shell docker ps -q --filter ancestor=$(IMAGE_NAME))
+
+test:
+	go test ./logic

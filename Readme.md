@@ -18,7 +18,7 @@ It uses a dynamic programming solution to determine the best combination of pack
 
 ## How to run
 
-### 1. **Run locally (requires Go 1.21+)**
+### 1. **Run locally (requires Go 1.24+)**
 
 ```sh
 go run main.go
@@ -45,6 +45,10 @@ Stop the container:
 make stop
 ```
 
+Test the service
+```sh
+make test
+```
 ---
 
 ## 🧪 How to test
