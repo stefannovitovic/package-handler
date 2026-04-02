@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Package Handler — try it</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f7f9;
+      --fg: #1a1d23;
+      --muted: #5c6370;
+      --card: #fff;
+      --border: #d8dce3;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121418;
+        --fg: #e8eaed;
+        --muted: #9aa0a8;
+        --card: #1c1f26;
+        --border: #2f3540;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+      max-width: 36rem;
+      margin-inline: auto;
+    }
+    h1 { font-size: 1.25rem; font-weight: 650; margin: 0 0 0.25rem; }
+    p.lead { margin: 0 0 1.25rem; color: var(--muted); font-size: 0.95rem; }
+    form {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: grid;
+      gap: 1rem;
+    }
+    label { display: grid; gap: 0.35rem; font-size: 0.85rem; font-weight: 600; }
+    input, textarea, button {
+      font: inherit;
+      padding: 0.5rem 0.65rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--fg);
+    }
+    textarea { min-height: 4.5rem; resize: vertical; }
+    button {
+      cursor: pointer;
+      font-weight: 600;
+      background: var(--fg);
+      color: var(--bg);
+      border-color: transparent;
+    }
+    button:hover { opacity: 0.92; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    pre {
+      margin: 1rem 0 0;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      font-size: 0.8rem;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .error { color: #b91c1c; }
+    @media (prefers-color-scheme: dark) {
+      .error { color: #f87171; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Package Handler</h1>
+  <p class="lead">Enter an order size and pack sizes (comma-separated). Calls <code>POST /calculate-packs</code> on this host.</p>
+
+  <form id="form">
+    <label>
+      Order (items)
+      <input id="order" type="number" name="order" min="1" value="4200" required />
+    </label>
+    <label>
+      Pack sizes
+      <textarea id="packs" name="packs" required>250, 500, 1000, 2000, 5000</textarea>
+    </label>
+    <button type="submit" id="submit">Calculate</button>
+  </form>
+  <pre id="out" aria-live="polite">Ready.</pre>
+
+  <script>
+    const form = document.getElementById('form');
+    const out = document.getElementById('out');
+    const submit = document.getElementById('submit');
+
+    function parsePackSizes(text) {
+      return text
+        .split(/[\s,]+/)
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((s) => {
+          const n = Number(s);
+          if (!Number.isInteger(n) || n <= 0) throw new Error('Pack sizes must be positive integers: ' + s);
+          return n;
+        });
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const order = Number(document.getElementById('order').value);
+      let packSizes;
+      try {
+        packSizes = parsePackSizes(document.getElementById('packs').value);
+      } catch (err) {
+        out.textContent = String(err.message);
+        out.className = 'error';
+        return;
+      }
+      if (!Number.isInteger(order) || order <= 0) {
+        out.textContent = 'Order must be a positive integer.';
+        out.className = 'error';
+        return;
+      }
+
+      submit.disabled = true;
+      out.className = '';
+      out.textContent = 'Loading…';
+
+      try {
+        const res = await fetch('/calculate-packs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order, pack_sizes: packSizes }),
+        });
+        const text = await res.text();
+        let body = text;
+        try {
+          body = JSON.stringify(JSON.parse(text), null, 2);
+        } catch (_) {}
+        if (!res.ok) {
+          out.className = 'error';
+          out.textContent = res.status + ' ' + res.statusText + '\n\n' + body;
+        } else {
+          out.textContent = body;
+        }
+      } catch (err) {
+        out.className = 'error';
+        out.textContent = 'Request failed: ' + err.message;
+      } finally {
+        submit.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
