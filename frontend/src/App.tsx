@@ -47,7 +47,8 @@ export default function App() {
 
     setLoading(true);
     try {
-      const res = await fetch("/calculate-packs", {
+        const base = import.meta.env.VITE_BACKEND_URL ?? "";
+        const res = await fetch(`${base}/calculate-packs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ order: orderNum, pack_sizes: sizes }),
