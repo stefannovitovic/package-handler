@@ -19,7 +19,7 @@ func main() {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		_, _ = w.Write(indexHTML)
 	})
-	mux.Handle("POST /calculate-packs", handlers.CalculatePacksHandler(logic.FindPacks))
+	mux.Handle("/calculate-packs", handlers.WithCORS(handlers.CalculatePacksHandler(logic.FindPacks)))
 
 	fmt.Println("Server running at http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", mux))
