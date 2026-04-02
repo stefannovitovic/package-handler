@@ -19,7 +19,12 @@ func main() {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		_, _ = w.Write(indexHTML)
 	})
-	mux.Handle("/calculate-packs", handlers.WithCORS(handlers.CalculatePacksHandler(logic.FindPacks)))
+
+	calc := handlers.CalculatePacksHandler(logic.FindPacks)
+	mux.Handle("POST /calculate-packs", handlers.WithCORS(calc))
+	mux.Handle("OPTIONS /calculate-packs", handlers.WithCORS(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	})))
 
 	fmt.Println("Server running at http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", mux))
